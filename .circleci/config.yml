@@ -3,23 +3,14 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@4.1.3
 # Jobs to Run
-
-executors:
-  ubuntu:
-    docker:
-      - image: ubuntu-2204:current
-        # aws_auth:
-        #   aws_access_key_id: $accessid
-        #   aws_secret_access_key: $secretkey
 parameters: 
   run_test:
     type: boolean
     default: true
 jobs:
   setup_circleci-machine:   # Job Name
-    # executor: ubuntu
-    docker:
-      - image: ubuntu-2204:current
+    machine:                # Executor type
+     image: ubuntu-2204:current
   # Steps for the jobs
     steps:
       - run: 
@@ -30,9 +21,6 @@ jobs:
   install_terraform:
     docker:
       - image: hashicorp/terraform:latest
-        # aws_auth:
-        #   aws_access_key_id: $accessid
-        #   aws_secret_access_key: $secretkey
     resource_class: medium
     steps:
       - checkout
