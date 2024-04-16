@@ -8,9 +8,9 @@ executors:
   ubuntu:
     docker:
       - image: ubuntu-2204:current
-        aws_auth:
-          aws_access_key_id: $accessid
-          aws_secret_access_key: $secretkey
+        # aws_auth:
+        #   aws_access_key_id: $accessid
+        #   aws_secret_access_key: $secretkey
 parameters: 
 
   run_test:
@@ -29,9 +29,9 @@ jobs:
   install_terraform:
     docker:
       - image: hashicorp/terraform:latest
-        aws_auth:
-          aws_access_key_id: $accessid
-          aws_secret_access_key: $secretkey
+        # aws_auth:
+        #   aws_access_key_id: $accessid
+        #   aws_secret_access_key: $secretkey
     resource_class: medium
     steps:
       - checkout
