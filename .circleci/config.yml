@@ -2,14 +2,27 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@4.1.3
-
+# Jobs to Run
 jobs:
-  setup_circleci-machine:
-        machine:
-          image: ubuntu-2204:current
-        steps:
-          - run: echo "Continuous Integration Rocks!"
-          - run: echo "completed"
+  setup_circleci-machine:   # Job Name
+    machine:                # Executor type
+     image: ubuntu-2204:current
+  # Steps for the jobs
+    steps:
+      - run: 
+         name: show run_command
+         command: |
+          echo "Continuous Integration Rocks!"
+          echo "completed"
+  install_aws:
+    docker:
+      - image: cimg/aws:lts
+    resource_class: medium
+    steps:
+      - run:
+          name: install aws
+          command: 
+            echo "Just testing this"
 workflows:
   all_jobs:
     jobs:
