@@ -3,24 +3,24 @@ version: 2.1
 orbs:
   aws-s3: circleci/aws-s3@3.1.1
   aws-cli: circleci/aws-cli@4.1.3
-  
-parameters:
-  run_prod_job:
-    Description: "For production Job Only"
-    Type: boolean
-    Default: false
 
-  changeset:
-    Type: string
-    Default: ""
+# parameters:
+#   run_prod_job:
+#     Description: "For production Job Only"
+#     Type: boolean
+#     Default: false
 
-  commit_id:
-    Type: string
-    Default: ""
+#   changeset:
+#     Type: string
+#     Default: ""
 
-  plan:
-    Type: string
-    Default: ""
+#   commit_id:
+#     Type: string
+#     Default: ""
+
+#   plan:
+#     Type: string
+#     Default: ""
 
 executors:
   ubuntu:
@@ -57,7 +57,7 @@ jobs:
 
 workflows:
   codepipeline:
-    when: << pipeline.parameters.run_prod_job >>
+    # when: << pipeline.parameters.run_prod_job >>
     jobs:
       - show_changeset
       - start_prod_job
