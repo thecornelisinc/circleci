@@ -27,4 +27,4 @@ workflows:
   all_jobs:
     jobs:
     - setup_circleci-machine
-    - install_aws
+    - install_terraform
