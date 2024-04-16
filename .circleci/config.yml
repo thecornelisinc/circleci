@@ -6,20 +6,20 @@ orbs:
 
 parameters:
   run_prod_job:
-    Type: boolean
-    Default: false
+    type: boolean
+    default: false
 
   changeset:
-    Type: string
-    Default: ""
+    type: string
+    default: ""
 
   commit_id:
-    Type: string
-    Default: ""
+    type: string
+    default: ""
 
   plan:
-    Type: string
-    Default: ""
+    type: string
+    default: ""
 
 executors:
   ubuntu:
