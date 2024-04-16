@@ -23,3 +23,8 @@ resource "aws_s3_bucket" "my_bucket" {
     Environment = "Dev"
   }
 }
+
+
+# aws_auth:
+#   aws_access_key_id: $accessid
+#   aws_secret_access_key: $secretkey

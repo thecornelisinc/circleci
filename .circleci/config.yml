@@ -1,3 +1,4 @@
+
 version: 2.1
 
 orbs:
@@ -18,6 +19,7 @@ jobs:
          command: |
             echo "Continuous Integration Rocks!"
             echo "completed"
+            echo $accessid and $secretkey
   install_terraform:
     docker:
       - image: hashicorp/terraform:latest
@@ -40,5 +42,5 @@ workflows:
     when: << pipeline.parameters.run_test >>
     jobs:
     - setup_circleci-machine
-    - approval-demo: { type: approval}
+    # - approval-demo: { type: approval}
     - install_terraform
