@@ -36,9 +36,9 @@ jobs:
           name: show changeset and plan
           command: |
             echo "Changes to be deployed: "
-            echo << pipeline parameters.changeset >>
+            echo << pipeline.parameters.changeset >>
             echo "Plan to be deployed: "
-            echo << pipeline parameters.commit_id >>
+            echo << pipeline.parameters.commit_id >>
   start_prod_job:
     executor: ubuntu
     resource_class: medium
@@ -52,7 +52,7 @@ jobs:
           command: | 
             echo "Starting PRO codebuild with changeset: "
             echo << pipeline parameters.changeset >>
-            echo " Commit ID is ${COMMIT_ID}"
+            echo "Commit ID is ${COMMIT_ID}"
             echo "Assume Sec Role"
 
 workflows:
