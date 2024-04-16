@@ -1,13 +1,32 @@
 version: 2.1
 
+orbs:
+  aws-cli: circleci/aws-cli@4.1.3
+# Jobs to Run
 jobs:
-  build:
-    docker: 
-      - image: cimg/base:current
+  setup_circleci-machine:   # Job Name
+    machine:                # Executor type
+     image: ubuntu-2204:current
+  # Steps for the jobs
     steps:
-      - checkout 
-      - run: echo "Terraform Job is about to start"
+      - run: 
+         name: show run_command
+         command: |
+          echo "Continuous Integration Rocks!"
+          echo "completed"
+  install_terraform:
+    docker:
+      - image: hashicorp/terraform:latest
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: install terraform
+          command: |
+            terraform init 
+            terraform fmt 
 workflows:
-    demo-workflows:
-      jobs:
-        - build
+  all_jobs:
+    jobs:
+    - setup_circleci-machine
+    - install_terraform
