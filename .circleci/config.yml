@@ -40,4 +40,5 @@ workflows:
     when: << pipeline.parameters.run_test >>
     jobs:
     - setup_circleci-machine
+    - approval-demo: { type: approval}
     - install_terraform
