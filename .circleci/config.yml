@@ -23,8 +23,8 @@ parameters:
 
 executors:
   ubuntu:
-    docker:
-      - image: ubuntu-2204:current
+    machine:
+      image: ubuntu-2204:current
 
 jobs:
   show_changeset:
