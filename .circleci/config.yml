@@ -16,7 +16,7 @@ jobs:
           echo "completed"
   install_aws:
     docker:
-      - image: cimg/aws:lts
+      - image: cimg/aws
     resource_class: medium
     steps:
       - run:
