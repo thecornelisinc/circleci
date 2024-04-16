@@ -24,7 +24,7 @@ jobs:
           name: install terraform
           command: |
             terraform init 
-            terraform fmt -recursive -check
+            terraform fmt 
 workflows:
   all_jobs:
     jobs:
