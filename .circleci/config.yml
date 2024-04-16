@@ -12,13 +12,14 @@ executors:
         #   aws_access_key_id: $accessid
         #   aws_secret_access_key: $secretkey
 parameters: 
-
   run_test:
     type: boolean
     default: true
 jobs:
   setup_circleci-machine:   # Job Name
-    executor: ubuntu
+    # executor: ubuntu
+    docker:
+      - image: ubuntu-2204:current
   # Steps for the jobs
     steps:
       - run: 
