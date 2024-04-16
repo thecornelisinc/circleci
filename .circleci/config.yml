@@ -8,8 +8,7 @@ jobs:
         machine:
           image: ubuntu-2204:current
         steps:
-          - run: sudo apt-get update && sudo apt-get install -y cowsay
-          - run: cowsay Continuous Integration Rocks!
+          - run: echo "Continuous Integration Rocks!""
           - run: echo "completed"
 workflows:
   all_jobs:
