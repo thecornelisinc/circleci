@@ -1,13 +1,12 @@
 version: 2.1
 
+orbs:
+  aws-cli: circleci/aws-cli@4.1.3
+
 jobs:
-  build:
-    docker: 
-      - image: cimg/base:current
-    steps:
-      - checkout 
-      - run: echo "Terraform Job is about to start"
-workflows:
-    demo-workflows:
-      jobs:
-        - build
+  setup_circleci-machine:
+        machine:
+          image: ubuntu-2204:current
+        steps:
+          - run: sudo apt-get update && sudo apt-get install -y cowsay
+          - run: cowsay Continuous Integration Rocks!
