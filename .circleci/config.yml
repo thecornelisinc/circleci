@@ -3,13 +3,7 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@4.1.3
 # Jobs to Run
-commands:
-  stage-initializations:
-    steps: 
-      - run:
-          command: |
-            echo "Continuous Integration Rocks!"
-            echo "completed"
+
 jobs:
   setup_circleci-machine:   # Job Name
     machine:                # Executor type
@@ -18,8 +12,9 @@ jobs:
     steps:
       - run: 
          name: show run_command
-         command: stage-initializations
-
+         command: |
+            echo "Continuous Integration Rocks!"
+            echo "completed"
   install_terraform:
     docker:
       - image: hashicorp/terraform:latest
@@ -33,7 +28,7 @@ jobs:
             terraform fmt 
       - run:
           name: list bucket
-          command: aws s3 ls
+          command: echo "# aws s3 ls"
 workflows:
   all_jobs:
     jobs:
