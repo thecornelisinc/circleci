@@ -42,15 +42,15 @@ jobs:
     executor: ubuntu
     resource_class: medium
     environment:
-      CHANGESET: << pipeline parameters.changeset >>
-      COMMIT_ID: << pipeline parameters.commit_id >>
+      CHANGESET: << pipeline.parameters.changeset >>
+      COMMIT_ID: << pipeline.parameters.commit_id >>
     steps:
       - aws-cli/setup
       - run:
           name: Assume Sec role and start codebuild
           command: | 
             echo "Starting PRO codebuild with changeset: "
-            echo << pipeline parameters.changeset >>
+            echo << pipeline.parameters.changeset >>
             echo "Commit ID is ${COMMIT_ID}"
             echo "Assume Sec Role"
 
