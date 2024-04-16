@@ -29,6 +29,9 @@ jobs:
       - run:
           name: list bucket
           command: echo "# aws s3 ls"
+      - store_artifacts:
+          path: aws/demo/doc
+          destination: circleci-docs
 workflows:
   all_jobs:
     jobs:
