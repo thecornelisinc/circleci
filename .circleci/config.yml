@@ -19,6 +19,7 @@ jobs:
       - image: hashicorp/terraform:latest
     resource_class: medium
     steps:
+      - run: checkout
       - run:
           name: install terraform
           command: 
