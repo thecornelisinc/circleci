@@ -16,7 +16,7 @@ jobs:
           echo "completed"
   install_terraform:
     docker:
-      - image: cimg/base:current
+      - image: hashicorp/terraform:latest
     resource_class: medium
     steps:
       - run:
