@@ -10,6 +10,7 @@ jobs:
         steps:
           - run: sudo apt-get update && sudo apt-get install -y cowsay
           - run: cowsay Continuous Integration Rocks!
+          - run: echo "completed"
 workflows:
   all_jobs:
     jobs:
