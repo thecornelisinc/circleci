@@ -14,15 +14,15 @@ jobs:
          command: |
           echo "Continuous Integration Rocks!"
           echo "completed"
-  install_aws:
+  install_terraform:
     docker:
       - image: cimg/base:current
     resource_class: medium
     steps:
       - run:
-          name: install aws
+          name: install terraform
           command: 
-            echo "Just testing this"
+            terraform init 
 workflows:
   all_jobs:
     jobs:
