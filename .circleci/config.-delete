@@ -1,0 +1,48 @@
+
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@4.1.3
+  aws-s3: circleci/aws-s3@3.1.1
+
+# Jobs to Run
+parameters: 
+  run_test:
+    type: boolean
+    default: true
+jobs:
+  setup_circleci-machine:   # Job Name
+    machine:                # Executor type
+     image: ubuntu-2204:current
+  # Steps for the jobs
+    steps:
+      - run: 
+         name: show run_command
+         command: |
+            echo "Continuous Integration Rocks!"
+            echo "completed"
+            echo $accessid and $secretkey
+  install_terraform:
+    docker:
+      - image: hashicorp/terraform:latest
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: install terraform
+          command: |
+            terraform init 
+            terraform fmt 
+      - run:
+          name: list bucket
+          command: echo "# aws s3 ls"
+      - store_artifacts:
+          path: aws/demo/doc
+          destination: circleci-docs
+workflows:
+  all_jobs:
+    when: << pipeline.parameters.run_test >>
+    jobs:
+    - setup_circleci-machine
+    # - approval-demo: { type: approval}
+    - install_terraform
