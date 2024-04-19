@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   aws-s3: circleci/aws-s3@3.1.1
   aws-cli: circleci/aws-cli@4.1.3
+  terraform: circleci/terraform@3.2.1
 
 parameters:
   run_prod_job:
@@ -38,41 +39,33 @@ jobs:
             echo << pipeline.parameters.changeset >>
             echo "Plan to be deployed: "
             echo << pipeline.parameters.commit_id >>
-  build:
-    executor: ubuntu
-    resource_class: medium
-    steps:
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo pip install awscli
-            terraform init
+
   start_prod_job:
-    executor: ubuntu
-    resource_class: medium
+    executor: terraform/default
     environment:
       CHANGESET: << pipeline.parameters.changeset >>
       COMMIT_ID: << pipeline.parameters.commit_id >>
     steps:
-      # - aws-cli/setup
+      - aws-cli/setup
+      - checkout
       - run:
-          name: Assume Sec role and start codebuild
+          name: get commit id
           command: | 
             echo "Starting PRO codebuild with changeset: "
             echo << pipeline.parameters.changeset >>
             echo "Commit ID is ${COMMIT_ID}"
             echo "Assume Sec Role"
-  deploy:
-    executor: ubuntu
-    resource_class: medium
-    steps:
-      - checkout          
-      - run: 
-          name: deploy to s3
-          command: |
-           terraform fmt
-           terraform build
-           terraform apply
+      - terraform/init:
+          path: .
+      - terraform/validate:
+          path: .
+      - terraform/fmt:
+          path: .
+      - terraform/plan:
+          path: .
+      - terraform/apply:
+          path: .
+
 
 
 workflows:
@@ -81,10 +74,9 @@ workflows:
     jobs:
       - show_changeset
       - start_prod_job
-      - build
-      - deploy:
-          requires:
-          - build
+      # - deploy:
+      #     requires:
+      #     - build
           # filters:
           #   branches:
           #     only: main
