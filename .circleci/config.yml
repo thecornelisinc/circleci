@@ -44,7 +44,9 @@ jobs:
     steps:
       - run:
           name: Install AWS CLI
-          command: sudo pip install awscli
+          command: |
+            sudo pip install awscli
+            terraform init
   start_prod_job:
     executor: ubuntu
     resource_class: medium
@@ -67,7 +69,10 @@ jobs:
       - checkout          
       - run: 
           name: deploy to s3
-          command: aws s3api create-bucket --bucket bucketformpipeline --region us-east-1
+          command: |
+           terraform fmt
+           terraform build
+           terraform apply
 
 
 workflows:
