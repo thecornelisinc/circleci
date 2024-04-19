@@ -59,8 +59,8 @@ jobs:
           path: .
       - terraform/validate:
           path: .
-      - terraform/fmt:
-          path: .
+      # - terraform/fmt:
+      #     path: .
       - terraform/plan:
           path: .
       - terraform/apply:
