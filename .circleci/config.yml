@@ -64,6 +64,7 @@ jobs:
     executor: ubuntu
     resource_class: medium
     steps:
+      - checkout          
       - run: 
           name: deploy to s3
           command: aws s3api create-bucket --bucket bucketformpipeline --region us-east-1
