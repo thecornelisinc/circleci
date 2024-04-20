@@ -65,6 +65,8 @@ jobs:
           path: .
       - terraform/apply:
           path: .
+      - terraform/destroy:
+          path: .
 
 
 
