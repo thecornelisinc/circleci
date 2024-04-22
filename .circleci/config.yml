@@ -46,12 +46,14 @@ jobs:
       CHANGESET: << pipeline.parameters.changeset >>
       COMMIT_ID: << pipeline.parameters.commit_id >>
     steps:
+      - run: 
+          name: Install jq
+          command: sudo apt-get update && sudo apt-get install -y jq
       - aws-cli/setup
       - checkout
       - run:
           name: get commit id
           command: | 
-            sudo apt-get update && sudo apt-get install -y jq
             echo "Starting PRO codebuild with changeset: "
             echo << pipeline.parameters.changeset >>
             echo "Commit ID is ${COMMIT_ID}"
