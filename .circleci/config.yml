@@ -39,15 +39,14 @@ jobs:
             echo << pipeline.parameters.changeset >>
             echo "Plan to be deployed: "
             echo << pipeline.parameters.commit_id >>
-
   start_prod_job:
-    executor: terraform/default
+    docker:
+      - image: cimg/base:2024.02
     environment:
       CHANGESET: << pipeline.parameters.changeset >>
       COMMIT_ID: << pipeline.parameters.commit_id >>
     steps:
       - aws-cli/setup
-      - checkout
       - run:
           name: get commit id
           command: | 
