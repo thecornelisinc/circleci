@@ -70,7 +70,7 @@ jobs:
             terraform init
             terraform fmt
             terraform plan -input=false
-            terraform apply
+            terraform apply -auto-approve
 
 
           
