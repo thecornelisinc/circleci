@@ -68,8 +68,8 @@ jobs:
           name: Terraform FMT
           command: | 
             terraform fmt
-            terraform/plan -input=false
-            terraform/apply
+            terraform plan -input=false
+            terraform apply
 
 
           
