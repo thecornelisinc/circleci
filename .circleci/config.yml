@@ -55,20 +55,12 @@ jobs:
             echo << pipeline.parameters.changeset >>
             echo "Commit ID is ${COMMIT_ID}"
             echo "Assume Sec Role"
-      - terraform/init:
-          path: .
-      - terraform/validate:
-          path: .
-      # - terraform/fmt:
-      #     path: .
-      - terraform/plan:
-          path: .
-      # - terraform/apply:
-      #     path: .
-      - terraform/destroy:
-          path: .
-
-
+            aws sts assume-role --role-arn "arn:aws:iam::357225030460:role/Adminaccecss" --role-session-name demo --duration-seconds 3600 > /tmp/aws_credentials.json
+            export AWS_ACCESS_KEY_ID=$(jq -r .Credentials.AccessKeyId /tmp/aws_credentials.json)
+            export AWS_SECRET_ACCESS_KEY=$(jq -r .Credentials.SecretAccessKey /tmp/aws_credentials.json)
+            export AWS_SESSION_TOKEN=$(jq -r .Credentials.SessionToken /tmp/aws_credentials.json)
+            rm /tmp/aws_credentials.json
+            
 
 workflows:
   codepipeline:
