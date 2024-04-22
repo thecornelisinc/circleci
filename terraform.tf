@@ -16,7 +16,7 @@ provider "aws" {
 # Create an S3 bucket
 resource "aws_s3_bucket" "my_bucket" {
   bucket      = "my-unique-bucket-name1-new" # Ensure this name is unique
-  acl    = "private"                      # Defines who can access the bucket, e.g., "private", "public-read", etc.
+  # Defines who can access the bucket, e.g., "private", "public-read", etc.
 
   tags = {
     Name                = "My S3 Bucket"
