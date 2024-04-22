@@ -51,7 +51,7 @@ jobs:
       - run:
           name: get commit id
           command: | 
-            apt-get update && sudo apt-get install -y jq
+            curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
             echo "Starting PRO codebuild with changeset: "
             echo << pipeline.parameters.changeset >>
             echo "Commit ID is ${COMMIT_ID}"
