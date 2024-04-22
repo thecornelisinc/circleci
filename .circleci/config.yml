@@ -46,10 +46,10 @@ jobs:
       CHANGESET: << pipeline.parameters.changeset >>
       COMMIT_ID: << pipeline.parameters.commit_id >>
     steps:
+      - aws-cli/setup
       - run: 
           name: Install jq
           command: apt-get update && sudo apt-get install -y jq
-      - aws-cli/setup
       - checkout
       - run:
           name: get commit id
