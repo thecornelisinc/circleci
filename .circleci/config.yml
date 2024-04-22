@@ -50,7 +50,7 @@ jobs:
       - run:
           name: get commit id
           command: | 
-            curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
+            # curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
             echo "Starting PRO codebuild with changeset: "
             echo << pipeline.parameters.changeset >>
             echo "Commit ID is ${COMMIT_ID}"
