@@ -1,7 +1,6 @@
 version: 2.1
 
 orbs:
-
   aws-cli: circleci/aws-cli@4.1.3
   terraform: circleci/terraform@3.2.1
 
@@ -71,6 +70,7 @@ workflows:
     # when: << pipeline.parameters.run_prod_job >>
     jobs:
       - show_changeset
+      - security-approval: {type: approval}
       - start_prod_job
       # - deploy:
       #     requires:
