@@ -72,5 +72,9 @@ jobs:
 workflows:
   codepipeline:
     jobs:
+      - build
+      - terraform_plan:
+          requires:
+            - build        
       - start_prod_job
 
