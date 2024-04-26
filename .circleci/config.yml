@@ -45,8 +45,6 @@ jobs:
     executor: terraform/default
     steps:
       - checkout
-      - terraform/install
-      - terraform/init
       - run:
           name: Initialize Terraform
           command: |
@@ -79,8 +77,6 @@ workflows:
   codepipeline:
     jobs:
       - build
-      - terraform_plan:
-          requires:
-            - build        
+      - terraform_plan    
       - start_prod_job
 
