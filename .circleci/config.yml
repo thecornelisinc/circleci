@@ -5,6 +5,21 @@ orbs:
   terraform: circleci/terraform@3.2.1
 
 parameters:
+  run_prod_job:
+    type: boolean
+    default: false
+
+  changeset:
+    type: string
+    default: ""
+
+  commit_id:
+    type: string
+    default: ""
+
+  plan:
+    type: string
+    default: ""
 
 executors:
   ubuntu:
@@ -26,28 +41,27 @@ jobs:
   start_prod_job:
     docker:
       - image: cimg/base:2024.02
-    # environment:
-      # CHANGESET: " << pipeline.parameters.changeset >> "
-      # COMMIT_ID: " << pipeline.parameters.commit_id >> "
+    environment:
+      CHANGESET: " << pipeline.parameters.changeset >> "
+      COMMIT_ID: " << pipeline.parameters.commit_id >> "
     steps:
       - aws-cli/setup:
          role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
          region: "us-east-1"
          # optional parameters
          profile_name: "OIDC-PROFILE"
-         role_session_name: ${CIRCLE_BUILD-NUM}
+         role_session_name: "CCI"
          session_duration: '1800'
       - terraform/install
       - terraform/init
       - checkout     
       - run:
-          name: 'Job number ${CIRCLE_BUILD-NUM}'
+          name: Job Num ${CIRCLE_BUILD-NUM}
           command: | 
             terraform init
             terraform fmt
             terraform plan -input=false
             terraform apply -auto-approve
-
 
 
           
