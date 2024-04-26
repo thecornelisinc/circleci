@@ -45,8 +45,7 @@ jobs:
     executor: terraform/default
     steps:
       - checkout
-      - terraform/init:
-          path .
+      - terraform/init
       - terraform/validate:
           checkout: true
           context: terraform
