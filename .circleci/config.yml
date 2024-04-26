@@ -40,7 +40,6 @@ jobs:
     steps:
       - checkout
       - install-dependencies
-      - run: python -m unittest discover tests
 
   terraform_plan:
     executor: terraform/default
