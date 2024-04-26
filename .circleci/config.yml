@@ -49,14 +49,14 @@ jobs:
          role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
          region: "us-east-1"
          # optional parameters
-         profile_name: "OIDC-PROFILE"
+         profile_name: $CIRCLE_PROJECT_REPONAME
          role_session_name: "CCI"
          session_duration: '1800'
       - terraform/install
       - terraform/init
       - checkout     
       - run:
-          name: Job Num ${CIRCLE_BUILD-NUM}
+          name: Job Num $CIRCLE_BUILD-NUM
           command: | 
             terraform init
             terraform fmt
