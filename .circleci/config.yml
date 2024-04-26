@@ -44,15 +44,16 @@ jobs:
   terraform_plan:
     executor: terraform/default
     steps:
-      - terraform/install
-      - terraform/init
-      - terraform/plan
       - checkout
-      # - run:
-      #     name: Initialize Terraform
-      #     command: |
-      #       terraform plan
-
+      - terraform/init:
+          path .
+      - terraform/validate:
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/fmt
+      - terraform/plan:
+          path .
 
   
   # security_scan:
