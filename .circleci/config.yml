@@ -56,7 +56,7 @@ jobs:
       - terraform/init
       - checkout     
       - run:
-          name: Job Num $CIRCLE_BUILD-NUM
+          name: Job Num $CIRCLE_BUILD_NUM
           command: | 
             terraform init
             terraform fmt
@@ -70,7 +70,7 @@ workflows:
     # when: << pipeline.parameters.run_prod_job >>
     jobs:
       - show_changeset
-      - security-approval: {type: approval}
+      # - security-approval: {type: approval}
       - start_prod_job
       # - deploy:
       #     requires:
