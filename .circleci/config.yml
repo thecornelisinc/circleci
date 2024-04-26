@@ -1,80 +1,135 @@
 version: 2.1
 
+# Orbs
 orbs:
-  aws-cli: circleci/aws-cli@4.1.3
-  terraform: circleci/terraform@3.2.1
+  aws-cli: circleci/aws-cli@2.0.3
+  terraform: circleci/terraform@2.1.3
+  snyk: snyk/snyk@1.1.1  # Snyk orb for security scanning
 
+# Pipeline parameters
 parameters:
   run_prod_job:
     type: boolean
     default: false
 
-  changeset:
-    type: string
-    default: ""
+  deploy-env:
+    type: enum
+    enum: ["security", "production", "development"]
+    default: "development"
 
-  commit_id:
-    type: string
-    default: ""
-
-  plan:
-    type: string
-    default: ""
-
+# Executors
 executors:
-  ubuntu:
-    machine:
-      image: ubuntu-2204:current
-
-jobs:
-  show_changeset:
-    executor: ubuntu
-    resource_class: medium
-    steps:
-      - run: 
-          name: show changeset and plan
-          command: |
-            echo "Changes to be deployed: "
-            echo << pipeline.parameters.changeset >>
-            echo "Plan to be deployed: "
-            echo << pipeline.parameters.commit_id >>
-  start_prod_job:
+  python-executor:
     docker:
-      - image: cimg/base:2024.02
-    environment:
-      CHANGESET: " << pipeline.parameters.changeset >> "
-      COMMIT_ID: " << pipeline.parameters.commit_id >> "
+      - image: cimg/python:3.8
+
+# Commands
+commands:
+  install-dependencies:
+    description: "Install Python dependencies"
     steps:
-      - aws-cli/setup:
-         role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
-         region: "us-east-1"
-         # optional parameters
-         profile_name: $CIRCLE_PROJECT_REPONAME
-         role_session_name: "CCI"
-         session_duration: '1800'
+      - run: pip install -r requirements.txt
+
+# Jobs
+jobs:
+  build:
+    executor: python-executor
+    steps:
+      - checkout
+      - install-dependencies
+      - run: python -m unittest discover tests
+
+  terraform_plan:
+    executor: terraform/default
+    steps:
+      - checkout
       - terraform/install
-      - terraform/init
-      - checkout     
       - run:
-          name: Job Num $CIRCLE_BUILD_NUM
-          command: | 
-            terraform init
-            terraform fmt
-            terraform plan -input=false
-            terraform apply -auto-approve
+          name: Initialize Terraform
+          command: terraform init
+      - terraform/plan:
+          path: ./terraform
 
+  # security_scan:
+  #   executor: python-executor
+  #   steps:
+  #     - checkout
+  #     - snyk/scan:
+  #         fail-on-issues: true
+  #         iac: true
+  #         project-name: "IaC-security-check"
+  #         severity-threshold: high
 
-          
+  deploy:
+    executor: aws-cli/default
+    parameters:
+      target-env:
+        type: string
+        default: "development"
+    steps:
+      - checkout
+      - run:
+          name: Deploy to << parameters.target-env >>
+          command: |
+            if [ "<< parameters.target-env >>" == "production" ]; then
+              aws s3 cp ./build s3://production-bucket/ --recursive
+            elif [ "<< parameters.target-env >>" == "security" ]; then
+              aws s3 cp ./build s3://security-bucket/ --recursive
+            else
+              aws s3 cp ./build s3://dev-bucket/ --recursive
+            fi
+      - aws-cli/setup
+      - run:
+          name: Apply Terraform Changes
+          command: terraform apply -auto-approve
+          working_directory: ./terraform
+
+# Workflows
 workflows:
-  codepipeline:
-    # when: << pipeline.parameters.run_prod_job >>
+  version: 2
+  build-test-deploy:
     jobs:
-      - show_changeset
-      # - security-approval: {type: approval}
-      - start_prod_job
-      # - deploy:
-      #     requires:
-      #     - build
-          # filters:
-          #   branches:
-          #     only: main
+      - build
+      - terraform_plan:
+          requires:
+            - build
+      - security_scan:
+          requires:
+            - terraform_plan
+      - hold:
+          type: approval
+          requires:
+            - security_scan
+      - deploy:
+          name: Deploy to Dev
+          context: dev-context
+          requires:
+            - hold
+          matrix:
+            parameters:
+              target-env: ["development"]
+          filters:
+            branches:
+              only: dev
+      - deploy:
+          name: Deploy to Security
+          context: security-context
+          requires:
+            - hold
+          matrix:
+            parameters:
+              target-env: ["security"]
+          filters:
+            branches:
+              only: master
+      - deploy:
+          name: Deploy to Production
+          context: production-context
+          requires:
+            - hold
+          matrix:
+            parameters:
+              target-env: ["production"]
+          filters:
+            branches:
+              only: master
