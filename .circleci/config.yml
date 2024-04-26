@@ -49,8 +49,8 @@ jobs:
       - run:
           name: Initialize Terraform
           command: terraform init
-      - terraform/plan:
-          path: ../terraform/terraform
+      - terraform/plan
+
   
   # security_scan:
   #   executor: python-executor
