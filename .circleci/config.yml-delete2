@@ -21,11 +21,10 @@ jobs:
          # optional parameters
          profile_name: "CCI"
          role_session_name: "CCI"
-         session_duration: '1800'
+         session_duration: '3000'
      
 workflows:
   codepipeline:
     jobs:
-      - show_changeset
       - start_prod_job
 
