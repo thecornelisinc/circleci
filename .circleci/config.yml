@@ -51,7 +51,7 @@ jobs:
          region: "us-east-1"
          # optional parameters
          profile_name: "OIDC-PROFILE"
-         role_session_name: “CCI”
+         role_session_name: "CCI"
          session_duration: '1800'
       - terraform/install
       - terraform/init
