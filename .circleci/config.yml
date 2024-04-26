@@ -46,13 +46,9 @@ jobs:
     steps:
       - checkout
       - terraform/init
-      - terraform/validate:
-          checkout: true
-          context: terraform
-          requires:
-            - terraform/fmt
-      - terraform/plan:
-          path .
+      - terraform/validate
+      - terraform/plan
+
 
   
   # security_scan:
