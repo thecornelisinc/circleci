@@ -16,10 +16,16 @@ parameters:
     enum: ["security", "production", "development"]
     default: "development"
 
+# executors:
+#   ubuntu:
+#     machine:
+#       image: ubuntu-2204:current
+
+# Executors
 executors:
-  ubuntu:
-    machine:
-      image: ubuntu-2204:current
+  python-executor:
+    docker:
+      - image: cimg/python:3.8
 
 # Commands
 commands:
@@ -58,8 +64,7 @@ jobs:
   #         severity-threshold: high
   
   start_prod_job:
-    docker:
-      - image: cimg/base:2024.02
+    executor: python-executor
     steps:
       - aws-cli/setup:
          role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
