@@ -47,10 +47,11 @@ jobs:
       - checkout
       - terraform/install
       - terraform/init
-      - run:
-          name: Initialize Terraform
-          command: |
-            terraform plan
+      - terraform/plan
+      # - run:
+      #     name: Initialize Terraform
+      #     command: |
+      #       terraform plan
 
 
   
