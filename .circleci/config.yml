@@ -44,10 +44,10 @@ jobs:
   terraform_plan:
     executor: terraform/default
     steps:
-      - checkout
       - terraform/install
       - terraform/init
       - terraform/plan
+      - checkout
       # - run:
       #     name: Initialize Terraform
       #     command: |
