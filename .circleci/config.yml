@@ -48,9 +48,9 @@ jobs:
       - terraform/install
       - run:
           name: Initialize Terraform
-          command: terraform init
-      - terraform/plan:
-          path: terraform/terraform
+          command: |
+            terraform init
+            terraform plan
 
   
   # security_scan:
