@@ -49,8 +49,9 @@ jobs:
       - terraform/init
       - run:
           name: Initialize Terraform
-          command: terraform plan
-            # terraform plan
+          command: |
+            terraform plan
+
 
   
   # security_scan:
