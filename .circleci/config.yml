@@ -5,21 +5,6 @@ orbs:
   terraform: circleci/terraform@3.2.1
 
 parameters:
-  run_prod_job:
-    type: boolean
-    default: false
-
-  changeset:
-    type: string
-    default: ""
-
-  commit_id:
-    type: string
-    default: ""
-
-  plan:
-    type: string
-    default: ""
 
 executors:
   ubuntu:
@@ -50,18 +35,19 @@ jobs:
          region: "us-east-1"
          # optional parameters
          profile_name: "OIDC-PROFILE"
-         role_session_name: "CCI"
+         role_session_name: ${CIRCLE_BUILD-NUM}
          session_duration: '1800'
       - terraform/install
       - terraform/init
       - checkout     
       - run:
-          name: Terraform FMT
+          name: 'Job number ${CIRCLE_BUILD-NUM}'
           command: | 
             terraform init
             terraform fmt
             terraform plan -input=false
             terraform apply -auto-approve
+
 
 
           
