@@ -5,12 +5,58 @@ orbs:
   terraform: circleci/terraform@3.2.1
   snyk: snyk/snyk@2.1.0
 
+# Pipeline parameters
+parameters:
+  run_prod_job:
+    type: boolean
+    default: false
+
+  deploy-env:
+    type: enum
+    enum: ["security", "production", "development"]
+    default: "development"
+
 executors:
   ubuntu:
     machine:
       image: ubuntu-2204:current
 
+# Commands
+commands:
+  install-dependencies:
+    description: "Install Python dependencies"
+    steps:
+      - run: pip install -r requirements.txt
+
 jobs:
+  build:
+    executor: python-executor
+    steps:
+      - checkout
+      - install-dependencies
+      - run: python -m unittest discover tests
+
+  terraform_plan:
+    executor: terraform/default
+    steps:
+      - checkout
+      - terraform/install
+      - run:
+          name: Initialize Terraform
+          command: terraform init
+      - terraform/plan:
+          path: ./terraform
+  
+  # security_scan:
+  #   executor: python-executor
+  #   steps:
+  #     - checkout
+  #     - snyk/scan:
+  #         fail-on-issues: true
+  #         iac: true
+  #         project-name: "IaC-security-check"
+  #         severity-threshold: high
+  
   start_prod_job:
     docker:
       - image: cimg/base:2024.02
