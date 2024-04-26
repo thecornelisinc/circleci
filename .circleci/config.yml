@@ -46,6 +46,7 @@ jobs:
     steps:
       - checkout
       - terraform/install
+      - terraform/init
       - run:
           name: Initialize Terraform
           command: |
