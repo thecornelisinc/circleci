@@ -45,12 +45,12 @@ jobs:
     executor: terraform/default
     steps:
       - checkout
+      - terraform/install
       - run:
           name: Initialize Terraform
-          command: |
-            terraform init
-            terraform plan
-
+          command: terraform init
+      - terraform/plan:
+          path: ./terraform
   
   # security_scan:
   #   executor: python-executor
@@ -77,6 +77,6 @@ workflows:
   codepipeline:
     jobs:
       - build
-      - terraform_plan    
+      - terraform_plan   
       - start_prod_job
 
