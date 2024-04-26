@@ -26,9 +26,9 @@ jobs:
   start_prod_job:
     docker:
       - image: cimg/base:2024.02
-    environment:
-      CHANGESET: " << pipeline.parameters.changeset >> "
-      COMMIT_ID: " << pipeline.parameters.commit_id >> "
+    # environment:
+      # CHANGESET: " << pipeline.parameters.changeset >> "
+      # COMMIT_ID: " << pipeline.parameters.commit_id >> "
     steps:
       - aws-cli/setup:
          role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
