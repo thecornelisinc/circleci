@@ -41,13 +41,34 @@ jobs:
       - checkout
       - install-dependencies
 
-  terraform_plan:
+  plan:
     executor: terraform/default
+    working_directory: ~/dev-acct/user-access
     steps:
       - checkout
-      - terraform/init
-      - terraform/validate
-      - terraform/plan
+      - run:
+          name: Initialize Terraform
+          command: terraform init
+      - run:
+          name: Terraform Validate
+          command: terraform fmt
+      - run:
+          name: Terraform Plan
+          command: terraform plan
+
+  apply:
+    executor: terraform/default
+    working_directory: ~/dev-acct/user-access
+    steps:
+      - checkout
+      - run:
+          name: Initialize Terraform
+          command: terraform init
+      - run:
+          name: Terraform Apply
+          command: terraform apply -auto-approve
+
+
 
   # security_scan:
   #   executor: python-executor
@@ -71,9 +92,15 @@ jobs:
          session_duration: '3000'
      
 workflows:
-  codepipeline:
+  build_and_deploy:
     jobs:
       - build
-      - terraform_plan   
+      - plan
       - start_prod_job
-
+      - apply:
+          requires:
+            - start_prod_job
+            - plan
+          # filters:
+          #   branches:
+          #     only: master  
