@@ -13,14 +13,3 @@ provider "aws" {
   region           = "us-east-1" # You can change this to your desired AWS region
 }
 
-# Create an S3 bucket
-resource "aws_s3_bucket" "my_bucket" {
-  bucket      = "my-unique-bucket-name1-more" # Ensure this name is unique
-
-
-  tags = {
-    Name                = "My S3 Bucket"
-    Environment = "Dev"
-  }
-}
-
