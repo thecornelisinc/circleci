@@ -61,6 +61,7 @@ jobs:
           command: |
             echo $MODIFIED  
             echo $CIRCLE_PREVIOUS_COMMIT
+            echo $CIRCLE_SHA1
             if [ "$MODIFIED" == "true" ]; then
               echo 'Deploying to SEC...'
               - aws-cli/setup:
@@ -113,6 +114,7 @@ jobs:
             command: |
               echo $MODIFIED
               echo $CIRCLE_PREVIOUS_COMMIT
+              echo $CIRCLE_SHA1
               if [ "$MODIFIED" == "true" ]; then
                 echo 'Deploying to DEV...'
                 - aws-cli/setup:
