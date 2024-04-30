@@ -53,7 +53,7 @@ jobs:
           command: ls dev-acct/user-access
       - run:
           command: |
-            cd dev-account/user-access
+            cd dev-acct/user-access
             echo "Current directory:"
             pwd
             echo "Listing current directory contents:"
@@ -69,14 +69,14 @@ jobs:
       - run:
           name: Initialize and Apply Terraform
           command: |
-            cd dev-account/user-access
+            cd dev-acct/user-access
             echo "Current directory:"
             pwd
             echo "Listing current directory contents:"
             ls -al
             terraform init
-            terraform apply -auto-approve
             terraform destroy -auto-approve
+            terraform apply -auto-approve
             
 
 
