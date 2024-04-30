@@ -50,7 +50,7 @@ jobs:
           command: pwd
       - run:
           name: List files in directory
-          command: ls -al 
+          command: ls dev-acct/user-access
       - run: 
           name: work Report
           command: cd dev-acct/user-access
