@@ -62,6 +62,7 @@ jobs:
             echo $MODIFIED  
             echo $CIRCLE_PREVIOUS_COMMIT
             echo $CIRCLE_SHA1
+            echo $CIRCLE_PREVIOUS_COMMIT..$CIRCLE_SHA1
             if [ "$MODIFIED" == "true" ]; then
               echo 'Deploying to SEC...'
               - aws-cli/setup:
