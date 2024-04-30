@@ -100,34 +100,34 @@ jobs:
             #   echo 'No changes in SEC folder. Skipping deployment.'
             # fi
   # Repeat similar blocks for 'dev' and 'prod'
-deploy-to-dev:
-    executor: terraform-executor
-    steps:
-      - checkout
-      - check-modified:
-          path: dev
-      - run:
-          name: Deploy to DEV if modified
-          command: |
-            if [ "$MODIFIED" == "true" ]; then
-              echo 'Deploying to DEV...'
-              - aws-cli/setup:
-                    role_arn: 'arn:aws:iam::863980140052:role/circleci-role'
-                    region: "us-east-1"
-                    # optional parameters
-                    profile_name: "CCI"
-                    role_session_name: "CCI"
-                    session_duration: '3000'          
-              cd sec
-              terraform init
-              terraform apply -auto-approve
-            else
-              echo 'No changes in SEC folder. Skipping deployment.'
-            fi
+  deploy-to-dev:
+      executor: terraform-executor
+      steps:
+        - checkout
+        - check-modified:
+            path: dev
+        - run:
+            name: Deploy to DEV if modified
+            command: |
+              if [ "$MODIFIED" == "true" ]; then
+                echo 'Deploying to DEV...'
+                - aws-cli/setup:
+                      role_arn: 'arn:aws:iam::863980140052:role/circleci-role'
+                      region: "us-east-1"
+                      # optional parameters
+                      profile_name: "CCI"
+                      role_session_name: "CCI"
+                      session_duration: '3000'          
+                cd sec
+                terraform init
+                terraform apply -auto-approve
+              else
+                echo 'No changes in SEC folder. Skipping deployment.'
+              fi
   # Repeat similar blocks for 'dev' and 'prod'
 
 workflows:
-  deploy:
+  build_and_deploy:
     jobs:
       - deploy-to-sec
       - deploy-to-dev
