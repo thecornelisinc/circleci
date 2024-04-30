@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "developer_Policy" {
-  name        = "DeveloperAccessPolicy"
+  name        = "DeveloperAccessPolicynew"
   path        = "/"
   description = "Developer access policy for AWS services."
 
