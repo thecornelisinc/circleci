@@ -122,7 +122,7 @@ jobs:
                 terraform init
                 terraform apply -auto-approve
               else
-                echo 'No changes in SEC folder. Skipping deployment.'
+                echo 'No changes in DEV folder. Skipping deployment.'
               fi
   # Repeat similar blocks for 'dev' and 'prod'
 
