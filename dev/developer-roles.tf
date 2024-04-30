@@ -13,9 +13,8 @@ resource "aws_iam_policy" "developer_Policy" {
         Action = [
           "ec2:*",
           "lambda:*",
-          "s3:*",
-          "rds:*",
-          "codecommit:*"
+          "s3:*"
+
         ],
         Resource = "*"
       }
