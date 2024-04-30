@@ -43,7 +43,6 @@ jobs:
 
   plan:
     executor: terraform/default
-    working_directory: ~/dev-acct/user-access
     steps:
       - checkout   
       - run:
@@ -55,10 +54,9 @@ jobs:
       - run:
           name: Terraform Plan
           command: terraform plan
-
-  apply:
-    executor: terraform/default
     working_directory: ~/circleci/dev-acct/user-access
+  apply:
+    executor: terraform/default 
     steps:
       - checkout
       - run:
@@ -67,7 +65,7 @@ jobs:
       - run:
           name: Terraform Apply
           command: terraform apply -auto-approve
-
+    working_directory: ~/circleci/dev-acct/user-access
 
 
   # security_scan:
