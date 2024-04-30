@@ -23,9 +23,11 @@ parameters:
 
 # Executors
 executors:
-  python-executor:
+  terraform-executor:
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/python:3.8  # Python image as an example, change as needed
+    environment:
+      AWS_DEFAULT_REGION: 'us-east-1'  # Example, change as needed
 
 # Commands
 commands:
@@ -33,84 +35,100 @@ commands:
     description: "Install Python dependencies"
     steps:
       - run: pip install -r requirements.txt
+  check-modified:
+    parameters:
+      path:
+        type: string
+    steps:
+      - run:
+          name: Check if << parameters.path >> has changes
+          command: |
+            if git diff --name-only $CIRCLE_PREVIOUS_COMMIT..$CIRCLE_SHA1 | grep -q << parameters.path >>; then
+              echo 'export MODIFIED=true' >> $BASH_ENV
+            else
+              echo 'export MODIFIED=false' >> $BASH_ENV
+            fi
 
 jobs:
-  build:
-    executor: python-executor
+  deploy-to-sec:
+    executor: terraform-executor
     steps:
       - checkout
-      - install-dependencies
-
-  plan:
-    executor: terraform/default
-    steps:
-      - checkout  
+      - check-modified:
+          path: sec
       - run:
-          name: Check current directory
-          command: pwd
-      - run:
-          name: List files in directory
-          command: ls dev-acct/user-access
-      - run:
+          name: Deploy to SEC if modified
           command: |
-            cd dev-acct/user-access
-            echo "Current directory:"
-            pwd
-            echo "Listing current directory contents:"
-            ls -al
-            terraform init
-            terraform fmt
-            terraform plan 
-
-  apply:
-    executor: terraform/default 
+            if [ "$MODIFIED" == "true" ]; then
+              echo 'Deploying to SEC...'
+              - aws-cli/setup:
+                    role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
+                    region: "us-east-1"
+                    # optional parameters
+                    profile_name: "CCI"
+                    role_session_name: "CCI"
+                    session_duration: '3000'          
+              cd sec
+              terraform init
+              terraform apply -auto-approve
+            else
+              echo 'No changes in SEC folder. Skipping deployment.'
+            fi
+  # Repeat similar blocks for 'dev' and 'prod'
+# deploy-to-prod:
+#     executor: terraform-executor
+#     steps:
+#       - checkout
+#       - check-modified:
+#           path: prod
+#       - run:
+#           name: Deploy to PROD if modified
+#           command: |
+#             if [ "$MODIFIED" == "true" ]; then
+#               echo 'Deploying to PROD...'
+#               - aws-cli/setup:
+            #         role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
+            #         region: "us-east-1"
+            #         # optional parameters
+            #         profile_name: "CCI"
+            #         role_session_name: "CCI"
+            #         session_duration: '3000'          
+            #   cd sec
+            #   terraform init
+            #   terraform apply -auto-approve
+            # else
+            #   echo 'No changes in SEC folder. Skipping deployment.'
+            # fi
+  # Repeat similar blocks for 'dev' and 'prod'
+deploy-to-dev:
+    executor: terraform-executor
     steps:
       - checkout
+      - check-modified:
+          path: dev
       - run:
-          name: Initialize and Apply Terraform
+          name: Deploy to DEV if modified
           command: |
-            cd dev-acct/user-access
-            echo "Current directory:"
-            pwd
-            echo "Listing current directory contents:"
-            ls -al
-            terraform init
-            terraform apply -auto-approve
-            terraform destroy -auto-approve
-            
+            if [ "$MODIFIED" == "true" ]; then
+              echo 'Deploying to DEV...'
+              - aws-cli/setup:
+                    role_arn: 'arn:aws:iam::863980140052:role/circleci-role'
+                    region: "us-east-1"
+                    # optional parameters
+                    profile_name: "CCI"
+                    role_session_name: "CCI"
+                    session_duration: '3000'          
+              cd sec
+              terraform init
+              terraform apply -auto-approve
+            else
+              echo 'No changes in SEC folder. Skipping deployment.'
+            fi
+  # Repeat similar blocks for 'dev' and 'prod'
 
-
-  # security_scan:
-  #   executor: python-executor
-  #   steps:
-  #     - checkout
-  #     - snyk/scan:
-  #         fail-on-issues: true
-  #         iac: true
-  #         project-name: "IaC-security-check"
-  #         severity-threshold: high
-  
-  start_prod_job:
-    executor: python-executor
-    steps:
-      - aws-cli/setup:
-         role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
-         region: "us-east-1"
-         # optional parameters
-         profile_name: "CCI"
-         role_session_name: "CCI"
-         session_duration: '3000'
-     
 workflows:
-  build_and_deploy:
+  deploy:
     jobs:
-      - build
-      - plan
-      - start_prod_job
-      - apply
-          # requires:
-          #   - start_prod_job
-          #   - plan
-          # filters:
-          #   branches:
-          #     only: master  
+      - deploy-to-sec
+      - deploy-to-dev
+      # - deploy-to-prod

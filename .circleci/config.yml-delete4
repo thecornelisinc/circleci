@@ -1,0 +1,116 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@4.1.3
+  terraform: circleci/terraform@3.2.1
+  snyk: snyk/snyk@2.1.0
+
+# Pipeline parameters
+parameters:
+  run_prod_job:
+    type: boolean
+    default: false
+
+  deploy-env:
+    type: enum
+    enum: ["security", "production", "development"]
+    default: "development"
+
+# executors:
+#   ubuntu:
+#     machine:
+#       image: ubuntu-2204:current
+
+# Executors
+executors:
+  python-executor:
+    docker:
+      - image: cimg/python:3.8
+
+# Commands
+commands:
+  install-dependencies:
+    description: "Install Python dependencies"
+    steps:
+      - run: pip install -r requirements.txt
+
+jobs:
+  build:
+    executor: python-executor
+    steps:
+      - checkout
+      - install-dependencies
+
+  plan:
+    executor: terraform/default
+    steps:
+      - checkout  
+      - run:
+          name: Check current directory
+          command: pwd
+      - run:
+          name: List files in directory
+          command: ls dev-acct/user-access
+      - run:
+          command: |
+            cd dev-acct/user-access
+            echo "Current directory:"
+            pwd
+            echo "Listing current directory contents:"
+            ls -al
+            terraform init
+            terraform fmt
+            terraform plan 
+
+  apply:
+    executor: terraform/default 
+    steps:
+      - checkout
+      - run:
+          name: Initialize and Apply Terraform
+          command: |
+            cd dev-acct/user-access
+            echo "Current directory:"
+            pwd
+            echo "Listing current directory contents:"
+            ls -al
+            terraform init
+            terraform apply -auto-approve
+            terraform destroy -auto-approve
+            
+
+
+  # security_scan:
+  #   executor: python-executor
+  #   steps:
+  #     - checkout
+  #     - snyk/scan:
+  #         fail-on-issues: true
+  #         iac: true
+  #         project-name: "IaC-security-check"
+  #         severity-threshold: high
+  
+  start_prod_job:
+    executor: python-executor
+    steps:
+      - aws-cli/setup:
+         role_arn: 'arn:aws:iam::357225030460:role/circleci-role'
+         region: "us-east-1"
+         # optional parameters
+         profile_name: "CCI"
+         role_session_name: "CCI"
+         session_duration: '3000'
+     
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+      - plan
+      - start_prod_job
+      - apply
+          # requires:
+          #   - start_prod_job
+          #   - plan
+          # filters:
+          #   branches:
+          #     only: master  
