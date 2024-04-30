@@ -46,9 +46,7 @@ jobs:
     # working_directory: ~/dev-acct/user-access
     steps:
       - checkout   
-      - run:
-          name: Initialize Install
-          command: terraform install
+      - terraform/install
       - run:
           name: Initialize Terraform
           command: terraform init
@@ -64,9 +62,7 @@ jobs:
     working_directory: ~/dev-acct/user-access
     steps:
       - checkout
-      - run:
-          name: Initialize Install
-          command: terraform install
+      - terraform/install
       - run:
           name: Initialize Terraform
           command: terraform init
