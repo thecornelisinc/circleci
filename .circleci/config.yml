@@ -44,38 +44,28 @@ jobs:
   plan:
     executor: terraform/default
     steps:
-      - checkout  
+      - checkout   
       - run:
-          name: Check current directory
-          command: pwd
+          name: Initialize Terraform
+          command: terraform init
       - run:
-          name: List files in directory
-          command: ls dev-acct/user-access
+          name: Terraform Validate
+          command: terraform fmt
       - run:
-          command: |
-            cd dev-acct/user-access
-            echo "Current directory:"
-            pwd
-            echo "Listing current directory contents:"
-            ls -al
-            terraform init
-            terraform fmt
-            terraform plan 
+          name: Terraform Plan
+          command: terraform plan
 
   apply:
-    executor: terraform/default 
+    executor: terraform/default
     steps:
       - checkout
       - run:
-          name: Initialize and Apply Terraform
+          name: Initialize Terraform
           command: |
-            cd dev-acct/user-access
-            echo "Current directory:"
-            pwd
-            echo "Listing current directory contents:"
-            ls -al
-            terraform init
-            terraform apply -auto-approve
+            ./run-script.sh
+      # - run:
+      #     name: Terraform Apply
+      #     command: terraform apply -auto-approve
 
 
 
