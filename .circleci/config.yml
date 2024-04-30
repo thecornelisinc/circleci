@@ -45,8 +45,7 @@ jobs:
     executor: terraform/default
     working_directory: ~/dev-acct/user-access
     steps:
-      - checkout
-   
+      - checkout   
       - run:
           name: Initialize Install
           command: terraform install
@@ -64,8 +63,10 @@ jobs:
     executor: terraform/default
     working_directory: ~/dev-acct/user-access
     steps:
-      - terraform/install
       - checkout
+      - run:
+          name: Initialize Install
+          command: terraform install
       - run:
           name: Initialize Terraform
           command: terraform init
