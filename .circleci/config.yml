@@ -47,7 +47,7 @@ jobs:
       - checkout   
       - run: 
           name: work Report
-          command: cd ~/circleci/dev-acct/user-access
+          command: cd dev-acct/user-access
       - run:
           name: Initialize Terraform
           command: terraform init
@@ -64,7 +64,7 @@ jobs:
       - checkout
       - run: 
           name: work Report
-          command: cd ~/circleci/dev-acct/user-access
+          command: cd dev-acct/user-access
       - run:
           name: Initialize Terraform
           command: terraform init
