@@ -45,6 +45,9 @@ jobs:
     executor: terraform/default
     steps:
       - checkout   
+      - run: 
+          name: work Report
+          command: cd ~/circleci/dev-acct/user-access
       - run:
           name: Initialize Terraform
           command: terraform init
@@ -54,18 +57,21 @@ jobs:
       - run:
           name: Terraform Plan
           command: terraform plan
-    working_directory: ~/circleci/dev-acct/user-access
+
   apply:
     executor: terraform/default 
     steps:
       - checkout
+      - run: 
+          name: work Report
+          command: cd ~/circleci/dev-acct/user-access
       - run:
           name: Initialize Terraform
           command: terraform init
       - run:
           name: Terraform Apply
           command: terraform apply -auto-approve
-    working_directory: ~/circleci/dev-acct/user-access
+
 
 
   # security_scan:
