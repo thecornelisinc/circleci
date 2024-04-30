@@ -46,7 +46,10 @@ jobs:
     working_directory: ~/dev-acct/user-access
     steps:
       - checkout
-      - terraform/install
+   
+      - run:
+          name: Initialize Install
+          command: terraform install
       - run:
           name: Initialize Terraform
           command: terraform init
@@ -99,10 +102,10 @@ workflows:
       - build
       - plan
       - start_prod_job
-      - apply:
-          requires:
-            - start_prod_job
-            - plan
+      - apply
+          # requires:
+          #   - start_prod_job
+          #   - plan
           # filters:
           #   branches:
           #     only: master  
