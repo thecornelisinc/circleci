@@ -59,6 +59,7 @@ jobs:
       - run:
           name: Deploy to SEC if modified
           command: |
+            echo $MODIFIED  
             if [ "$MODIFIED" == "true" ]; then
               echo 'Deploying to SEC...'
               - aws-cli/setup:
@@ -109,6 +110,7 @@ jobs:
         - run:
             name: Deploy to DEV if modified
             command: |
+              echo $MODIFIED
               if [ "$MODIFIED" == "true" ]; then
                 echo 'Deploying to DEV...'
                 - aws-cli/setup:

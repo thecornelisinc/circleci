@@ -14,7 +14,8 @@ resource "aws_iam_policy" "developer_Policy" {
           "ec2:*",
           "lambda:*",
           "s3:*",
-          "rds:*"
+          "rds:*",
+          "codecommit:*"
         ],
         Resource = "*"
       }
