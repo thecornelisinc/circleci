@@ -76,7 +76,8 @@ jobs:
             ls -al
             terraform init
             terraform apply -auto-approve
-
+            terraform destroy -auto-approve
+            
 
 
   # security_scan:
