@@ -12,8 +12,8 @@ resource "aws_iam_policy" "developer_Policy" {
         Effect = "Allow"
         Action = [
           "ec2:*",
-          "lambda:*",
-          "s3:*"
+          "lambda:*"
+    
 
         ],
         Resource = "*"

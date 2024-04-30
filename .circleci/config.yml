@@ -43,15 +43,18 @@ commands:
       - run:
           name: Check if << parameters.path >> has changes
           command: |
+            # Fetching all branch history to ensure the comparison can be made accurately
+            git fetch --no-tags origin main:test2
+            # Finding the common ancestor with the main branch
             BASE_COMMIT=$(git merge-base origin/main HEAD)
             echo "Base commit: $BASE_COMMIT"
+            # Checking for file changes in the specified path since the base commit
             if git diff --name-only $BASE_COMMIT HEAD | grep -q << parameters.path >>; then
               echo 'export MODIFIED=true' >> $BASH_ENV
             else
               echo 'export MODIFIED=false' >> $BASH_ENV
             fi
             source $BASH_ENV
-
 jobs:
   deploy-to-sec:
     executor: terraform-executor
