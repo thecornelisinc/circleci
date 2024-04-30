@@ -75,8 +75,8 @@ jobs:
             echo "Listing current directory contents:"
             ls -al
             terraform init
-            terraform destroy -auto-approve
             terraform apply -auto-approve
+            terraform destroy -auto-approve
             
 
 
