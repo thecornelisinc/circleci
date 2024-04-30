@@ -43,7 +43,7 @@ jobs:
 
   plan:
     executor: terraform/default
-    # working_directory: ~/dev-acct/user-access
+    working_directory: ~/dev-acct/user-access
     steps:
       - checkout   
       - run:
@@ -58,7 +58,7 @@ jobs:
 
   apply:
     executor: terraform/default
-    # working_directory: ~/dev-acct/user-access
+    working_directory: ~/dev-acct/user-access
     steps:
       - checkout
       - run:
