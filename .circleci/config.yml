@@ -58,7 +58,7 @@ jobs:
 
   apply:
     executor: terraform/default
-    working_directory: ~/dev-acct/user-access
+    working_directory: ~/circleci/dev-acct/user-access
     steps:
       - checkout
       - run:
