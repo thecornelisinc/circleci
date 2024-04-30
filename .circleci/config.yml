@@ -51,32 +51,31 @@ jobs:
       - run:
           name: List files in directory
           command: ls dev-acct/user-access
-      - run: 
-          name: work Report
-          command: cd dev-acct/user-access
       - run:
-          name: Initialize Terraform
-          command: terraform init
-      - run:
-          name: Terraform Validate
-          command: terraform fmt
-      - run:
-          name: Terraform Plan
-          command: terraform plan
+          command: |
+            cd dev-account/user-access
+            echo "Current directory:"
+            pwd
+            echo "Listing current directory contents:"
+            ls -al
+            terraform init
+            terraform fmt
+            terraform plan 
 
   apply:
     executor: terraform/default 
     steps:
       - checkout
-      - run: 
-          name: work Report
-          command: cd dev-acct/user-access
       - run:
-          name: Initialize Terraform
-          command: terraform init
-      - run:
-          name: Terraform Apply
-          command: terraform apply -auto-approve
+          name: Initialize and Apply Terraform
+          command: |
+            cd dev-account/user-access
+            echo "Current directory:"
+            pwd
+            echo "Listing current directory contents:"
+            ls -al
+            terraform init
+            terraform apply -auto-approve
 
 
 
