@@ -118,7 +118,7 @@ jobs:
                       profile_name: "CCI"
                       role_session_name: "CCI"
                       session_duration: '3000'          
-                cd sec
+                cd dev
                 terraform init
                 terraform apply -auto-approve
               else
