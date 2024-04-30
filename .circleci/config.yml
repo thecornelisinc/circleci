@@ -44,7 +44,13 @@ jobs:
   plan:
     executor: terraform/default
     steps:
-      - checkout   
+      - checkout  
+      - run:
+          name: Check current directory
+          command: pwd
+      - run:
+          name: List files in directory
+          command: ls -al 
       - run: 
           name: work Report
           command: cd dev-acct/user-access
