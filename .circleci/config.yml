@@ -1,8 +1,9 @@
 version: 2.1
 
 orbs:
-  aws-s3: circleci/aws-s3@3.1.1
+
   aws-cli: circleci/aws-cli@4.1.3
+  terraform: circleci/terraform@3.2.1
 
 parameters:
   run_prod_job:
@@ -38,47 +39,50 @@ jobs:
             echo << pipeline.parameters.changeset >>
             echo "Plan to be deployed: "
             echo << pipeline.parameters.commit_id >>
-  build:
-    executor: ubuntu
-    resource_class: medium
-    steps:
-      - run:
-          name: Install AWS CLI
-          command: sudo pip install awscli
   start_prod_job:
-    executor: ubuntu
-    resource_class: medium
+    docker:
+      - image: cimg/base:2024.02
     environment:
-      CHANGESET: << pipeline.parameters.changeset >>
-      COMMIT_ID: << pipeline.parameters.commit_id >>
+      CHANGESET: " << pipeline.parameters.changeset >> "
+      COMMIT_ID: " << pipeline.parameters.commit_id >> "
     steps:
-      # - aws-cli/setup
+      - aws-cli/setup
+      - terraform/install
+      - terraform/init
+      - checkout
       - run:
-          name: Assume Sec role and start codebuild
+          name: Get commit id
           command: | 
             echo "Starting PRO codebuild with changeset: "
             echo << pipeline.parameters.changeset >>
             echo "Commit ID is ${COMMIT_ID}"
             echo "Assume Sec Role"
-  deploy:
-    executor: ubuntu
-    resource_class: medium
-    steps:
-      - run: 
-          name: deploy to s3
-          command: aws s3api create-bucket --bucket bucketformpipeline --region us-east-1
+            aws sts assume-role-with-web-identity --region us-east-1 --role-arn "arn:aws:iam::357225030460:role/circleci-role" --role-session-name "demo" --web-identity-token $CIRCLE_OIDC_TOKEN --duration-seconds 3600 > /tmp/aws_credentials.json
+            cat /tmp/aws_credentials.json
+            export AWS_ACCESS_KEY_ID=$(cat /tmp/aws_credentials.json | jq .Credentials.AccessKeyId )
+            export AWS_SECRET_ACCESS_KEY=$(cat /tmp/aws_credentials.json | jq .Credentials.SecretAccessKey /tmp/aws_credentials.json)
+            export AWS_SESSION_TOKEN=$(cat /tmp/aws_credentials.json | jq .Credentials.SessionToken /tmp/aws_credentials.json)
+            rm /tmp/aws_credentials.json
+                        
+      - run:
+          name: Terraform FMT
+          command: | 
+            terraform init
+            terraform fmt
+            terraform plan -input=false
+            terraform apply -auto-approve
 
 
+          
 workflows:
   codepipeline:
     # when: << pipeline.parameters.run_prod_job >>
     jobs:
       - show_changeset
       - start_prod_job
-      - build
-      - deploy:
-          requires:
-          - build
-          filters:
-            branches:
-              only: main
+      # - deploy:
+      #     requires:
+      #     - build
+          # filters:
+          #   branches:
+          #     only: main
